@@ -34,6 +34,8 @@ const EditBlogDialog = ({
   id,
 }) => {
   const [editedTitle, setEditedTitle] = useState(title ? title : ""); // If Title Exists Set It As Value Else Set '' As Default Value
+  const [isDescModified, setIsDescModified] = useState(false);
+  const [isTitleModified, setIsTitleModified] = useState(false);
   const dispatch = useDispatch();
 
   // If description Exists Set It As Value Else Set '' As Default Value
@@ -44,11 +46,13 @@ const EditBlogDialog = ({
   // For Handle Title Change In The State
   const handlechangeTitle = (val) => {
     setEditedTitle(val);
+    setIsTitleModified(true);
   };
 
   // For Handle Description Change In The State
   const handlechangeDescription = (val) => {
     setEditedDescription(val);
+    setIsDescModified(true);
   };
 
   // Function For Update The Article Data
@@ -93,21 +97,45 @@ const EditBlogDialog = ({
                   <Label>Title</Label>
 
                   <TitleInput
+                    className={`${
+                      isTitleModified &&
+                      editedTitle.length === 0 &&
+                      "border border-red-500 outline-none"
+                    }`}
                     onChange={(e) => handlechangeTitle(e.target.value)}
                     value={editedTitle}
                   />
+
+                  {/* If Title Is Empty Show Validation Error Message */}
+                  {isTitleModified && editedTitle.length == 0 && (
+                    <div className="text-red-600">Please provide a Title.</div>
+                  )}
                 </div>
                 <div>
                   <Label>Description</Label>
                   <DescTextarea
+                    className={`${
+                      isDescModified &&
+                      editedDescription.length === 0 &&
+                      "border border-red-500 outline-none"
+                    }`}
                     onChange={(e) => handlechangeDescription(e.target.value)}
                     value={editedDescription}></DescTextarea>
+
+                  {isDescModified && editedDescription.length === 0 && (
+                    <div className="text-red-600">
+                      Please provide a description.
+                    </div>
+                  )}
                 </div>
 
                 {/* Disable Update Button If Data Not Changed */}
                 <UpdateBtn
                   disabled={
-                    title == editedTitle && description == editedDescription
+                    (title == editedTitle &&
+                      description == editedDescription) ||
+                    editedDescription == "" ||
+                    editedTitle == ""
                   }>
                   Update
                 </UpdateBtn>
