@@ -79,10 +79,10 @@ const Card = ({ blog }) => {
       </HeaderParent>
       <HeaderTitle>
         {/* Slice The First 50 characters Of Title To Be Pretty */}
-        <a href={url}>
+        <h1>
           {title?.length > 50 ? title?.slice(0, 50) : title}{" "}
           {title?.length > 50 && "..."}
-        </a>
+        </h1>
       </HeaderTitle>
       <HeaderDesc>
         {description?.length > 180 ? description?.slice(0, 180) : description}{" "}
