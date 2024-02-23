@@ -51,8 +51,7 @@ const AuthorSpan = styled.span.attrs({
 
 
 const ReadMoreLink = styled.a.attrs({
-    className: "inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline",
-    
+    className: "cursor-pointer inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline",
 })``;
 
 const ReadMoreLinkSvg = styled.svg.attrs({

@@ -12,9 +12,10 @@ const BlogsParagraph = styled.p.attrs({
     className: "font-light  sm:text-xl text-gray-700",
 })``;
 
-const CreateBtn = styled.button.attrs({
+const Button = styled.button.attrs({
     className: "focus:ring-4 focus:bg-blue-800 active:bg-blue-900 bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-lg flex items-center gap-1",
 })``;
+
 
 const BlogsGrid = styled.div.attrs({
     className: "grid  gap-4 gap-y-7 mt-12",
@@ -26,6 +27,6 @@ export {
     BlogsTitleParent,
     BlogsTitle,
     BlogsParagraph,
-    CreateBtn,
+    Button,
     BlogsGrid
 }

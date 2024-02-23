@@ -4,25 +4,26 @@ import Card from "../../components/Card/Card"; // Blog Card
 import FixedAlert from "../../components/FixedAlert/FixedAlert";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBlogs } from "../../store/blogs/actions"; // Fetch Blogs Action
-import { STATUSES } from "../../store/blogs/blogSlice"; // Fetching Data Statues Object
+import { STATUSES, incrementPage } from "../../store/blogs/blogSlice"; // Fetching Data Statues Object
 import {
   BlogsTitleParent,
   BlogsTitle,
   BlogsParagraph,
-  CreateBtn,
+  Button,
   BlogsGrid,
 } from "./elements"; // Blogs Reusable Styled Components Elements
 import CreateBlogDialog from "../../components/CreateBlogDialog/CreateBlogDialog"; // Create New Blog Dialog
 import Alert from "../../components/Alert/Alert"; // Alert Component For Show After Create New Article
 import Loader from "../../components/Loader/Loader"; // Loader Spinner For Show While Fetching Data
 import ErrorComponent from "../../components/Error/ErrorComponent"; // Error Component For Show If Fetching Data Not Success
+import SearchComponent from "../../components/Search/Search";
 const Blogs = () => {
   const [openCreateDialog, setOpenCreateDialog] = useState(false); // State For Open/Close Create Article Dialog
   const [showAlert, setShowAlert] = useState(false); // State For Show Create New Article Alert Message
 
   // Access Articles Array Data And Fetching status
   const {
-    blogs: { blogs, status },
+    blogs: { blogs, status, page },
   } = useSelector((state) => state);
 
   const dispatch = useDispatch();
@@ -35,10 +36,15 @@ const Blogs = () => {
   }, [showAlert]);
 
   useEffect(() => {
-    // Fetch Articles Data
-    dispatch(fetchBlogs());
+    // Fetch Articles Data only when the component mounts
+    dispatch(fetchBlogs(page));
   }, []);
 
+  const handleLoadMore = () => {
+    dispatch(incrementPage()); // Increment page before fetching new data
+    dispatch(fetchBlogs(page));
+    window.scrollTo(0, document.body.scrollHeight);
+  };
   // For Toggle Create New Article Dialog Form
   const toggleCreateDialog = () => {
     setOpenCreateDialog(!openCreateDialog);
@@ -68,7 +74,7 @@ const Blogs = () => {
   }
   return (
     <div>
-      <div className="share-route-parent">
+      <div className="share-route-parent pb-5">
         <Alert
           showAlert={showAlert}
           message={"The Article Created Successfully"}
@@ -80,11 +86,11 @@ const Blogs = () => {
             needs of your audience early and often.
           </BlogsParagraph>
         </BlogsTitleParent>
-        <div>
-          <CreateBtn onClick={toggleCreateDialog}>
+        <div className="flex justify-between items-center px-6">
+          <Button onClick={toggleCreateDialog}>
             Create New Article
             <Plus size={16} />
-          </CreateBtn>
+          </Button>
 
           {openCreateDialog && (
             <CreateBlogDialog
@@ -92,6 +98,8 @@ const Blogs = () => {
               setShowAlert={setShowAlert}
             />
           )}
+
+          <SearchComponent />
         </div>
         <BlogsGrid
           className={`grid-cols-1  ${
@@ -99,6 +107,12 @@ const Blogs = () => {
           }`}>
           {mapBlogs}
         </BlogsGrid>
+
+        {blogs.length > 0 && (
+          <div className="flex justify-center my-10">
+            <Button onClick={handleLoadMore}>Load More</Button>
+          </div>
+        )}
       </div>
     </div>
   );

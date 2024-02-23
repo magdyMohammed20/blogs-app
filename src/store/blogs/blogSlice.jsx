@@ -14,10 +14,19 @@ export const STATUSES = {
 const blogSlice = createSlice({
   name: "blogs-slice", // Slice Name
   initialState: {
+    page: 1,
     blogs: [], // Blogs Array To Contains Articles Data
     status: STATUSES.IDLE, // Status Of Fetching Data With Default Value
   },
   reducers: {
+    searchForArticle(state, action) {
+      const searchQuery = action.payload;
+      const regex = new RegExp(searchQuery, "i"); // 'i' flag for case-insensitive search
+      console.log(action.payload);
+      state.blogs = state.blogs.filter(
+        (item) => regex.test(item?.title) || regex.test(item?.author)
+      );
+    },
     // Delete Articles Using Filter And The Required Articles Id
     deleteArticle(state, action) {
       state.blogs = state.blogs.filter(
@@ -61,6 +70,10 @@ const blogSlice = createSlice({
         return item;
       });
     },
+
+    incrementPage(state) {
+      state.page = state.page + 1;
+    },
   },
 
   // Extra Reducers For Control Every Step In Fetching Data
@@ -71,7 +84,11 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogs.fulfilled, (state, action) => {
         state.status = STATUSES.IDLE;
-        state.blogs = action.payload;
+        if (state.page == 1) {
+          state.blogs = action.payload;
+        } else {
+          state.blogs = [...state.blogs, ...action.payload];
+        }
       })
       .addCase(fetchBlogs.rejected, (state) => {
         state.status = STATUSES.ERROR;
@@ -80,8 +97,13 @@ const blogSlice = createSlice({
 });
 
 // Export Create/Update/Delete Action To Use It In Buttons
-export const { deleteArticle, updateArticle, createArticle } =
-  blogSlice.actions;
+export const {
+  deleteArticle,
+  updateArticle,
+  createArticle,
+  searchForArticle,
+  incrementPage,
+} = blogSlice.actions;
 
 // Export The Blog Reducer For Combined Inside rootReducer
 export default blogSlice.reducer;

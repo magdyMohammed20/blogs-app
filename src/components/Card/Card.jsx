@@ -15,7 +15,8 @@ import {
 } from "./elements"; // Reusable Styled Components Elements
 import { formatDateDifference } from "../../utils/functions"; // Import (formatDateDifference) For Format publishedAt Date Of The Article
 import ActionBtns from "../actionsBtns/ActionBtns"; // Import (Delete - Edit) Actions Buttons
-
+import ViewBlogDialog from "../ViewBlogDialog/ViewBlogDialog";
+import { useState } from "react";
 /* 
   - Card Component 
   props(
@@ -32,9 +33,28 @@ const Card = ({ blog }) => {
     source : Object That Contains Article ID
   */
   const { title, description, author, url, publishedAt, source } = blog;
+  const [openViewDialog, setOpenViewDialog] = useState(false); // For close/open Article Data Dialog
+  const [currentViewed, setCurrentViewed] = useState({}); // Object For Store Data Of The Current Viewed Article
+
+  // Function For Open View Article Data Dialog
+  // And Fetch The Data Of The Current Viewed Article
+  const toggleViewDialog = () => {
+    setCurrentViewed({
+      title,
+      description,
+    });
+    setOpenViewDialog(!openViewDialog);
+  };
 
   return (
     <Parent>
+      {openViewDialog && (
+        <ViewBlogDialog
+          currentViewed={currentViewed}
+          toggleViewDialog={toggleViewDialog}
+        />
+      )}
+
       {/* 
         Component For Delete/Edit Buttons
         props(
@@ -65,8 +85,8 @@ const Card = ({ blog }) => {
         </a>
       </HeaderTitle>
       <HeaderDesc>
-        {description?.length > 200 ? description?.slice(0, 200) : description}{" "}
-        {description?.length > 200 && "..."}
+        {description?.length > 180 ? description?.slice(0, 180) : description}{" "}
+        {description?.length > 180 && "..."}
       </HeaderDesc>
       <CardFooter>
         <AuthorParent>
@@ -74,7 +94,8 @@ const Card = ({ blog }) => {
           {/* If Article Author Exists Show It Else Show 'N/A' */}
           <AuthorSpan>{author ? author : "N/A"}</AuthorSpan>
         </AuthorParent>
-        <ReadMoreLink href="#">
+
+        <ReadMoreLink onClick={toggleViewDialog}>
           Read more
           <ReadMoreLinkSvg
             fill="currentColor"
