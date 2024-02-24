@@ -108,7 +108,7 @@ const Blogs = () => {
           {mapBlogs}
         </BlogsGrid>
 
-        {blogs.length > 0 && (
+        {blogs.length > 0 && blogs.length != 100 && (
           <div className="flex justify-center my-10">
             <Button onClick={handleLoadMore}>Load More</Button>
           </div>
